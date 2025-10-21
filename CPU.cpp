@@ -6,6 +6,38 @@ CPU::CPU(std::vector<uint8_t> &&rom) : romData{std::move(rom)}
     pc = (romData[0xFFFD] << 8) | romData[0x00FFC];
 }
 
+void CPU::setZeroNegativeFlag(Byte value)
+{
+    sr = (sr & ~(negativeFlag | zeroFlag)) |
+         (value == 0 ? zeroFlag : 0)       |
+         (value & 0x80 ? negativeFlag : 0);
+}
+
+void CPU::setCarryFlag(bool carry)
+{
+    if (carry)
+    {
+        sr |= carryFlag;
+    }
+    else
+    {
+        sr &= ~carryFlag;
+    }
+}
+
+void CPU::setOverFlowFlag(Byte op1, Byte op2, Byte result)
+{
+
+    if ( ((op1 ^ result) & (op2 ^ result) & 0x80) != 0 )
+    {
+        sr |= overflowFlag;
+    }
+    else
+    {
+        sr &= ~overflowFlag;
+    }
+}
+
 Byte CPU::read(TwoByte addr)
 {
     if (addr <= 0x1FFF)         // Read from RAM
