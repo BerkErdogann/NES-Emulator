@@ -14,8 +14,6 @@ class CPU
 
 private:
     
-
-    
     std::vector<Byte> romData {};
     Byte ram[0x0800] {};
     TwoByte pc {};
